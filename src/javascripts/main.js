@@ -40,6 +40,7 @@ var NMO_Main = new function(){
 	this.normal_map_mode = "height";
 	this.download_btn = document.getElementById('download');
 	this.download_all_btn = document.getElementById('download_all');
+	this.download_normal_map_ox = document.getElementById('normal_map');
 
 
 	this.activate_height_tab = function(type){
@@ -304,12 +305,46 @@ var NMO_Main = new function(){
 			NMO_SpecularMap.createSpecularTexture();
 	};
 
+
+  function formatTimestamp(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // JS months are 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    const second = String(date.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}${hour}${minute}${second}`;
+  }
+
 	this.download_all_btn.addEventListener('click', function (e) {		
-		NMO_Main.downloadImage("NormalMap");
-		NMO_Main.downloadImage("DisplacementMap");
-		NMO_Main.downloadImage("AmbientOcclusionMap");
-		NMO_Main.downloadImage("SpecularMap");
-	});
+    // Prompt user for custom title
+    const customTitle = prompt("Enter a custom title for the file:", "CustomTitle_");
+    if (customTitle === null) return; // User pressed cancel, exit the function
+
+    // Generate a timestamp string
+    const timestamp = formatTimestamp(new Date());
+
+    // Append the custom title and timestamp to each image title in the downloadImage function calls
+    NMO_Main.downloadImage("NormalMap", + customTitle + "_NormalMap_" + timestamp);
+    NMO_Main.downloadImage("DisplacementMap", + customTitle + "_DisplacementMap_" + timestamp);
+    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp);
+    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp);
+  });
+
+  this.download_normal_map_ox.addEventListener('click', function (e) {		
+    // Prompt user for custom title
+    const customTitle = prompt("Enter a custom title for the file:", "CustomTitle_");
+    if (customTitle === null) return; // User pressed cancel, exit the function
+
+    // Generate a timestamp string
+    const timestamp = formatTimestamp(new Date());
+
+    // Append the custom title and timestamp to each image title in the downloadImage function calls
+    NMO_Main.downloadImage("NormalMap", + customTitle + "_NormalMap_" + timestamp);
+    NMO_Main.downloadImage("DisplacementMap", + customTitle + "_DisplacementMap_" + timestamp);
+    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp);
+    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp);
+  });
 	
 	this.download_btn.addEventListener('click', function (e) {		
 		if (document.getElementById('normal_map').style.cssText != "display: none;"){
@@ -327,7 +362,7 @@ var NMO_Main = new function(){
 	});
 	
 	
-	this.downloadImage = function(type){
+	this.downloadImage = function(type, oxTitle){
 		console.log("Downloading image");
 		var qual = 0.9;
 		var file_name = "download";
@@ -345,7 +380,7 @@ var NMO_Main = new function(){
 			if (file_type == "png") 
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_NormalMap.normal_canvas,0,0);
-			file_name="NormalMap";
+			file_name=oxTitle ? oxTitle : "NormalMap";
 		}
 		else if (type == "DisplacementMap"){
 			canvas.width = NMO_DisplacementMap.displacement_canvas.width;
@@ -354,7 +389,7 @@ var NMO_Main = new function(){
 			if (file_type == "png") 
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_DisplacementMap.displacement_canvas,0,0);
-			file_name="DisplacementMap";
+			file_name=oxTitle ? oxTitle : "DisplacementMap";
 		}
 		else if (type == "AmbientOcclusionMap"){
 			canvas.width = NMO_AmbientOccMap.ao_canvas.width;
@@ -363,7 +398,7 @@ var NMO_Main = new function(){
 			if (file_type == "png") 
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_AmbientOccMap.ao_canvas,0,0);
-			file_name="AmbientOcclusionMap";
+			file_name=oxTitle ? oxTitle : "AmbientOcclusionMap";
 		}
 		else if (type == "SpecularMap"){
 			canvas.width = NMO_SpecularMap.specular_canvas.width;
@@ -372,7 +407,7 @@ var NMO_Main = new function(){
 			if (file_type == "png") 
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_SpecularMap.specular_canvas,0,0);
-			file_name="SpecularMap";
+			file_name=oxTitle ? oxTitle : "SpecularMap";
 		}
 		
 		if (document.getElementById('file_name').value != "")

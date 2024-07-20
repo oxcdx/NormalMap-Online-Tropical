@@ -98,11 +98,11 @@ var NMO_RenderNormalview = new function(){
 		this.picture_below_map.wrapS 		= this.picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
 		this.picture_below_map.minFilter 	= this.picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
 		this.picture_below_map.anisotropy  	= 2;
-		this.normalmap_from_pictures_uniforms["tAbove"].value = this.picture_above_map;
-		this.normalmap_from_pictures_uniforms["tLeft"].value = this.picture_left_map;
-		this.normalmap_from_pictures_uniforms["tRight"].value = this.picture_right_map;
-		this.normalmap_from_pictures_uniforms["tBelow"].value = this.picture_below_map;
-		this.normalmap_from_pictures_uniforms["dimensions"].value = [NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 0];
+		// this.normalmap_from_pictures_uniforms["tAbove"].value = this.picture_above_map;
+		// this.normalmap_from_pictures_uniforms["tLeft"].value = this.picture_left_map;
+		// this.normalmap_from_pictures_uniforms["tRight"].value = this.picture_right_map;
+		// this.normalmap_from_pictures_uniforms["tBelow"].value = this.picture_below_map;
+		// this.normalmap_from_pictures_uniforms["dimensions"].value = [NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 0];
 		//normalmap_from_pictures_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
 
 		var normal_map_from_pictures_parameters = { 
@@ -204,7 +204,7 @@ var NMO_RenderNormalview = new function(){
 
 		var size_text = "" + (img.width) + " x " + (img.height);
 		size_text += (!NMO_FileDrop.isPowerOf2(img.width) || !NMO_FileDrop.isPowerOf2(img.height)) ? " NOT POWER OF 2 !" : "";
-		document.getElementById("size").value = size_text;
+		// document.getElementById("size").value = size_text;
 		
 		
 		if (map === "height"){

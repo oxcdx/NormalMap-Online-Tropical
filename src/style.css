@@ -1,15 +1,33 @@
 div.view {
-	//position: relative;
-	//background-color: #eee;
-	border: 1px solid #ccc;
+	border: none;
 	white-space: nowrap;
-	text-align: center;
-	padding: 8px;
-	margin: 8px;
+	padding: 0;
+	margin: 0;
 	z-index: 1;
-	height: 300px;
-    width: 300px;
+	height: 50%;
+  width: 100%;
+  line-height: 0;
 }
+
+div.view canvas {
+	height: 100%;
+  width: 100%;
+}
+
+#render_view {
+  height: 100%;
+  background: #000;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+#render_view canvas {
+  height: 100%;
+  width: 100%;
+  max-height: 100vh;
+}
+
 
 div.drop_cell{
 	border-style: outset;
@@ -18,8 +36,7 @@ div.drop_cell{
 
 div.pictures_view {
 	height: 100%;
-	//background: none repeat scroll 0% 0% rgba(50,50,50,1);
-	background: url('./images/light_bulp.png');
+  background: #000;
 }
 
 div.pictures_view_row {
@@ -44,15 +61,13 @@ div.pictures_view_cell {
 
 canvas.preview_img {
     /*background: #3A6F9A;*/
-    vertical-align: middle;
-    max-height: 300px;
-    max-width: 300px;
 }
 
-body{
-	background: url('./images/background.jpg');
-	font-family:"Open Sans";
-}
+/* body{
+	background: #000;
+	font-family:Arial, sans-serif;
+  color: #fff;
+} */
 
 div.content {
 	padding: 10px 10px 10px 10px;
@@ -76,7 +91,7 @@ div.texture_link {
 	color: #111;
 	border-radius: 5px; 
 	padding: 5px 5px 5px 5px; 
-	background: none repeat scroll 0% 0% rgba(240,240,240,0.7);"
+	background: none repeat scroll 0% 0% rgba(240,240,240,0.7);
 }
 
 div.column {
@@ -199,7 +214,6 @@ div.stepnumber {
 	width:30px;
 	margin-left: auto;
 	margin-right: auto;
-	//background-color:#aaaaaa;
 }
 
 div.imprint {

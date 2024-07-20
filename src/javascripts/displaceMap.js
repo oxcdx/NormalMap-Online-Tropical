@@ -29,6 +29,7 @@ NMO_DisplacementMap = new function(){
 	this.timer = 0;
 	this.current_disp_scale = 0;
 	this.contrast = -0.5;
+  this.mosaic = 0;
 	this.invert_displacement = false;
 	this.displacement_canvas = document.createElement("canvas");
 
@@ -100,6 +101,9 @@ NMO_DisplacementMap = new function(){
 		// add contrast value
 		displace_map = this.contrastImage(displace_map, this.contrast * 255);
 
+    // add mosaic value
+    displace_map = this.mosaicImage(displace_map, this.mosaic * 255);
+
 		if (this.smoothing > 0)
 			NMO_Gaussian.gaussiansharpen(displace_map, img_data.width, img_data.height, Math.abs(this.smoothing));
 		else if (this.smoothing < 0)
@@ -132,6 +136,7 @@ NMO_DisplacementMap = new function(){
 
 		this.uniforms["invert"].value = this.invert_displacement;
 		this.uniforms["contrast"].value = this.contrast;
+    this.uniforms["mosaic"].value = this.mosaic;
 		this.uniforms["tHeight"].value = this.height_map_tex;
 
 		this.gaussian_shader_y.uniforms[ "v" ].value = this.smoothing / w / 5;
@@ -188,6 +193,7 @@ NMO_DisplacementMap = new function(){
 
 		this.uniforms["invert"].value = this.invert_displacement;
 		this.uniforms["contrast"].value = this.contrast;
+		this.uniforms["mosaic"].value = this.mosaic;
 		this.uniforms["tHeight"].value = this.height_map_tex;
 		if(NMO_Main.normal_map_mode == "pictures")
 			this.uniforms["flipY"].value = 1;
@@ -250,6 +256,9 @@ NMO_DisplacementMap = new function(){
 		
 		else if (element == "contrast")
 			this.contrast = v;
+
+    else if (element == "mosaic")
+      this.mosaic = v;
 			
 		if(this.timer == 0)
 			this.timer = Date.now();
@@ -305,4 +314,38 @@ NMO_DisplacementMap = new function(){
 	    }
 	    return imageData;
 	};
+
+  this.mosaicImage = function(imageData, size) {
+    var data = imageData.data;
+    var w = imageData.width;
+    var h = imageData.height;
+    // Removed the line that redeclares and sets 'size' to 10
+    for(var y = 0; y < h; y += size){
+        for(var x = 0; x < w; x += size){
+            var r = 0, g = 0, b = 0;
+            var count = 0;
+            for(var y2 = y; y2 < y + size && y2 < h; y2++){
+                for(var x2 = x; x2 < x + size && x2 < w; x2++){
+                    var pos = (x2 + y2 * w) * 4;
+                    r += data[pos];
+                    g += data[pos + 1];
+                    b += data[pos + 2];
+                    count++;
+                }
+            }
+            r /= count;
+            g /= count;
+            b /= count;
+            for(var y2 = y; y2 < y + size && y2 < h; y2++){
+                for(var x2 = x; x2 < x + size && x2 < w; x2++){
+                    var pos = (x2 + y2 * w) * 4;
+                    data[pos] = r;
+                    data[pos + 1] = g;
+                    data[pos + 2] = b;
+                }
+            }
+        }
+    }
+    return imageData;
+  };
 }

@@ -28,7 +28,7 @@ var NMO_RenderView = new function(){
 	this.renderer = new THREE.WebGLRenderer({ alpha: false,  antialias: true });
 	this.displacement_map, this.diffuse_map, this.normal_map, this.specular_map, this.ao_map;
 	this.material;
-	this.rotation_enabled = true;
+	this.rotation_enabled = false;
 	this.render_model;
 	this.customModel;
 	this.textureCube;
@@ -76,7 +76,7 @@ var NMO_RenderView = new function(){
 		
 		var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
 		dirLight.color.setHSL( 0.1, 1, 0.95 );
-		dirLight.position.set( -1, 1.75, 1 );
+		dirLight.position.set( 0, 2.75, 1 );
 		dirLight.position.multiplyScalar( 50 );
 		this.scene.add( dirLight );
 
@@ -170,15 +170,15 @@ var NMO_RenderView = new function(){
 		this.material.uniforms.envMap.value = this.textureCube;
 		this.material.uniforms.aoMap.value = this.ao_map;
 		this.material.uniforms.aoMapIntensity.value = 1;
-		this.material.uniforms.displacementScale.value = -0.3
+		this.material.uniforms.displacementScale.value = -1
 		this.material.uniforms.displacementBias.value = 0;
-		this.material.uniforms.diffuse.value = new THREE.Color(0xaaaaaa);
-		this.material.uniforms.specular.value = new THREE.Color(0x444444);
+		this.material.uniforms.diffuse.value = new THREE.Color(0x342bf1);
+		this.material.uniforms.specular.value = new THREE.Color(0xc93ff0);
 		//this.material.unshininess.value = 40;
 		//this.material.uniforms.ambientLightColor.value = new THREE.Color(0x777777);
 
 
-		this.setModel("Cube");
+		this.setModel("Plane");
 
 		//this.scene.background = textureCube;
 		
@@ -228,10 +228,10 @@ var NMO_RenderView = new function(){
 			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
 			//geometry.computeTangents();
 			this.rotation_enabled = 0;
-			this.render_model.rotation.x = 0;
-			this.render_model.rotation.y = 0;
+			// this.render_model.rotation.x = 0;
+			// this.render_model.rotation.y = 0;
 			this.camera.position.x = 0;
-			this.camera.position.y = 0;
+			this.camera.position.y = -45;
 			this.camera.position.z = 29;
 			this.camera.lookAt({
 	        	x: 0,
