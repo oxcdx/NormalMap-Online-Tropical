@@ -64,7 +64,7 @@
     </button>
   </div>
   
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -171,6 +171,20 @@
                 type="range" value='-0.5' min='-1' max='1' step='0.01'/>
               <input id="dm_contrast_nmb" type="number" step="0.01"  value='-0.5' style="width: 60px;"
                 onchange="document.getElementById('dm_contrast_slider').value = this.value;NMO_DisplacementMap.setDisplacementSetting('contrast', this.value);">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <span>Brightness</span>
+            </div>
+            <div class="col d-flex gap-1">
+              <input id="dm_brightness_slider" 
+                  onchange="NMO_DisplacementMap.setDisplacementSetting('brightness', this.value); document.getElementById('dm_brightness_nmb').value = this.value;"
+                  oninput="NMO_DisplacementMap.setDisplacementSetting('brightness', this.value); document.getElementById('dm_brightness_nmb').value = this.value;"
+                  
+                  type="range" value='0' min='-1' max='1' step='0.01'/>
+              <input id="dm_brightness_nmb" type="number" step="0.01"  value='0' style="width: 60px;"
+                  onchange="NMO_DisplacementMap.setDisplacementSetting('brightness', this.value); document.getElementById('dm_brightness_slider').value = this.value;">
             </div>
           </div>
           <div class="row">
@@ -458,12 +472,12 @@
             <input class="tab_button" id="tab_btn_specular" type="button" onclick="NMO_Main.activate_texture('specular');" value="Specular"/>
           </div>
           <!-- Normal Texture -->
-          <div class="view" id="normal_map" style="cursor:pointer;">
+          <div class="view d-none" id="normal_map" >
             <canvas class="preview_img" id="normal_img" />
           </div>
           
           <!-- Displacement Texture -->
-          <div class="view" id="displacement_map" style="display: none;">
+          <div class="view" id="displacement_map" style="cursor:pointer;">
             <canvas class="preview_img" id="displace_img" />
           </div>
           

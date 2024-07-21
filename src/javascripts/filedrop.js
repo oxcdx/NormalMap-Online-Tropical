@@ -74,7 +74,7 @@ NMO_FileDrop = new function(){
   autoPhotoToggle.addEventListener("click", function() {
     autoTimerMode = !autoTimerMode;
     if (autoTimerMode) {
-        console.log("Auto timer mode is active");
+        // console.log("Auto timer mode is active");
         autoPhotoToggle.classList.add("active");
         // Start the timer to run capturePhoto every 5 seconds
         timerId = setInterval(function() { // Store the interval ID in timerId
@@ -82,7 +82,7 @@ NMO_FileDrop = new function(){
             console.log('Interval running');
         }, 5000);
     } else {
-        console.log("Auto timer mode is inactive");
+        // console.log("Auto timer mode is inactive");
         autoPhotoToggle.classList.remove("active");
         // Stop the timer using the stored interval ID
         clearInterval(timerId);
@@ -93,8 +93,8 @@ NMO_FileDrop = new function(){
       try {
         videoStream = await navigator.mediaDevices.getUserMedia({
           video: {
-            width: { ideal: 1920 }, // Request a high resolution to aim for the native resolution
-            height: { ideal: 1080 }
+            width: { ideal: 1280 }, // Request a high resolution to aim for the native resolution
+            height: { ideal: 720 }
           }
         });
         const video = document.createElement('video');
@@ -135,17 +135,19 @@ NMO_FileDrop = new function(){
   }
 
   function capturePhoto(clicked) {
-    console.log('Clicked:', clicked);
+    // console.log('Clicked:', clicked);
     if (videoStream && videoStream.getVideoTracks().length > 0) {
       const videoTrack = videoStream.getVideoTracks()[0];
       const settings = videoTrack.getSettings();
       // Determine the size for the square (use the smaller dimension of the video to ensure a square)
-      const squareSize = Math.min(settings.width, settings.height);
+      const squareSize = Math.min(512, 512);
 
       // Create an off-screen canvas
       const offScreenCanvas = document.createElement('canvas');
-      offScreenCanvas.width = squareSize; // Adjust canvas size to match the square size
-      offScreenCanvas.height = squareSize;
+      // offScreenCanvas.width = squareSize; // Adjust canvas size to match the square size
+      // offScreenCanvas.height = squareSize;
+      offScreenCanvas.width = 512; // Adjust canvas size to match the square size
+      offScreenCanvas.height = 512;
 
       // Draw the video frame to the off-screen canvas
       const ctx = offScreenCanvas.getContext('2d');
@@ -155,8 +157,10 @@ NMO_FileDrop = new function(){
 
       offScreenVideo.onloadedmetadata = () => {
           // Calculate the top left corner of the square area to capture from the video
-          const x = (settings.width - squareSize) / 2;
-          const y = (settings.height - squareSize) / 2;
+          // const x = (settings.width - squareSize) / 2;
+          // const y = (settings.height - squareSize) / 2;
+          const x = (512 - squareSize) / 2;
+          const y = (512 - squareSize) / 2;
 
           ctx.drawImage(offScreenVideo, x, y, squareSize, squareSize, 0, 0, squareSize, squareSize);
 
@@ -266,14 +270,14 @@ NMO_FileDrop = new function(){
             tga.load(new Uint8Array(data));
             data = tga.getDataURL('image/png');
         }
-        // Ensure the image processing functions handle 1080x1080 images correctly
+        // Ensure the image processing functions handle 720x720 images correctly
         if (type === "height")
-            NMO_FileDrop.loadHeightmap(data); // Adjust if necessary for 1080x1080
+            NMO_FileDrop.loadHeightmap(data); // Adjust if necessary for 720x720
         else if (type === "pictures")
-            NMO_FileDrop.loadHeightFromPictures(data, direction); // Adjust if necessary for 1080x1080
+            NMO_FileDrop.loadHeightFromPictures(data, direction); // Adjust if necessary for 720x720
         
         if (readImageCallback != false)
-            readImageCallback(name); // Ensure callback handles 1080x1080 correctly
+            readImageCallback(name); // Ensure callback handles 720x720 correctly
     };
     if (imgFile.type == "image/targa")
         reader.readAsArrayBuffer(imgFile);
@@ -315,8 +319,8 @@ NMO_FileDrop = new function(){
 	this.initHeightMap = function(){
 
 		//height_canvas.height = document.getElementById("height_canvas").height;
-		this.height_canvas.height = 1080;
-		this.height_canvas.width = 1080;
+		this.height_canvas.height = 720;
+		this.height_canvas.width = 720;
 		
 	    this.height_image = new Image();
 		this.height_image.onload = function () {

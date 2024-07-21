@@ -29,6 +29,7 @@ NMO_DisplacementMap = new function(){
 	this.timer = 0;
 	this.current_disp_scale = 0;
 	this.contrast = -0.5;
+  this.brightness = 0;
   this.mosaic = 0;
 	this.invert_displacement = false;
 	this.displacement_canvas = document.createElement("canvas");
@@ -101,6 +102,9 @@ NMO_DisplacementMap = new function(){
 		// add contrast value
 		displace_map = this.contrastImage(displace_map, this.contrast * 255);
 
+    // add brightness value
+    displace_map = this.brightnessImage(displace_map, this.contrast * 255);
+
     // add mosaic value
     displace_map = this.mosaicImage(displace_map, this.mosaic * 255);
 
@@ -136,6 +140,7 @@ NMO_DisplacementMap = new function(){
 
 		this.uniforms["invert"].value = this.invert_displacement;
 		this.uniforms["contrast"].value = this.contrast;
+    this.uniforms["brightness"].value = this.brightness;
     this.uniforms["mosaic"].value = this.mosaic;
 		this.uniforms["tHeight"].value = this.height_map_tex;
 
@@ -193,6 +198,7 @@ NMO_DisplacementMap = new function(){
 
 		this.uniforms["invert"].value = this.invert_displacement;
 		this.uniforms["contrast"].value = this.contrast;
+    this.uniforms["brightness"].value = this.brightness;
 		this.uniforms["mosaic"].value = this.mosaic;
 		this.uniforms["tHeight"].value = this.height_map_tex;
 		if(NMO_Main.normal_map_mode == "pictures")
@@ -257,6 +263,9 @@ NMO_DisplacementMap = new function(){
 		else if (element == "contrast")
 			this.contrast = v;
 
+    else if (element == "brightness")
+      this.brightness = v;
+
     else if (element == "mosaic")
       this.mosaic = v;
 			
@@ -290,6 +299,16 @@ NMO_DisplacementMap = new function(){
 		}
 	};
 
+  this.setDisplacementBrightness = function(v){
+    if(this.timer == 0)
+      this.timer = Date.now();
+      
+    if (NMO_Main.auto_update && Date.now() - this.timer > 50){
+      this.createDisplacementMap();
+      this.timer = 0;
+    }
+  };
+
 	this.setDisplacementScale = function(scale){
 		this.current_disp_scale = -scale;
 		this.updateDisplacementBias();
@@ -314,6 +333,18 @@ NMO_DisplacementMap = new function(){
 	    }
 	    return imageData;
 	};
+
+  this.brightnessImage = function(imageData, brightness) {
+    var data = imageData.data;
+
+    for (var i = 0; i < data.length; i += 4) {
+        data[i] = data[i] + brightness; // Red channel
+        data[i + 1] = data[i + 1] + brightness; // Green channel
+        data[i + 2] = data[i + 2] + brightness; // Blue channel
+        // Alpha channel (data[i + 3]) is not modified
+    }
+    return imageData;
+  };
 
   this.mosaicImage = function(imageData, size) {
     var data = imageData.data;

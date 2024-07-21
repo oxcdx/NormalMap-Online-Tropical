@@ -325,8 +325,8 @@ var NMO_Main = new function(){
     const timestamp = formatTimestamp(new Date());
 
     // Append the custom title and timestamp to each image title in the downloadImage function calls
-    NMO_Main.downloadImage("NormalMap", + customTitle + "_NormalMap_" + timestamp);
-    NMO_Main.downloadImage("DisplacementMap", + customTitle + "_DisplacementMap_" + timestamp);
+    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp);
+    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp);
     NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp);
     NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp);
   });
@@ -340,8 +340,8 @@ var NMO_Main = new function(){
     const timestamp = formatTimestamp(new Date());
 
     // Append the custom title and timestamp to each image title in the downloadImage function calls
-    NMO_Main.downloadImage("NormalMap", + customTitle + "_NormalMap_" + timestamp);
-    NMO_Main.downloadImage("DisplacementMap", + customTitle + "_DisplacementMap_" + timestamp);
+    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp);
+    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp);
     NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp);
     NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp);
   });
@@ -363,7 +363,7 @@ var NMO_Main = new function(){
 	
 	
 	this.downloadImage = function(type, oxTitle){
-		console.log("Downloading image");
+		// console.log("Downloading image");
 		var qual = 0.9;
 		var file_name = "download";
 		var canvas = document.createElement("canvas");
@@ -428,3 +428,20 @@ var NMO_Main = new function(){
 		}
 	}
 }
+
+//
+ // Function to toggle visibility
+ function toggleVisibility(event) {
+  event.preventDefault(); // Prevent the default context menu
+
+  // Toggle visibility of both maps
+  const normalMap = document.getElementById('normal_map');
+  const displacementMap = document.getElementById('displacement_map');
+
+  normalMap.classList.toggle('d-none');
+  displacementMap.classList.toggle('d-none');
+}
+
+// Attach event listeners
+document.getElementById('normal_map').addEventListener('contextmenu', toggleVisibility);
+document.getElementById('displacement_map').addEventListener('contextmenu', toggleVisibility);
