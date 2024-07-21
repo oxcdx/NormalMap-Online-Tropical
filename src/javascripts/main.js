@@ -324,11 +324,14 @@ var NMO_Main = new function(){
     // Generate a timestamp string
     const timestamp = formatTimestamp(new Date());
 
-    // Append the custom title and timestamp to each image title in the downloadImage function calls
-    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp);
-    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp);
-    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp);
-    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp);
+    // Get the current value of the #dm_strength_slider
+    const sliderValue = document.getElementById('dm_strength_slider').value;
+
+    // Append the custom title, timestamp, and slider value to each image title in the downloadImage function calls
+    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp + "_" + "displacement_" + sliderValue);
   });
 
   this.download_normal_map_ox.addEventListener('click', function (e) {		
@@ -339,11 +342,14 @@ var NMO_Main = new function(){
     // Generate a timestamp string
     const timestamp = formatTimestamp(new Date());
 
-    // Append the custom title and timestamp to each image title in the downloadImage function calls
-    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp);
-    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp);
-    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp);
-    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp);
+    // Get the current value of the #dm_strength_slider
+    const sliderValue = document.getElementById('dm_strength_slider').value;
+
+    // Append the custom title, timestamp, and slider value to each image title in the downloadImage function calls
+    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp + "_" + "displacement_" + sliderValue);
   });
 	
 	this.download_btn.addEventListener('click', function (e) {		
