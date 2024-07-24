@@ -346,10 +346,27 @@ var NMO_Main = new function(){
     const sliderValue = document.getElementById('dm_strength_slider').value;
 
     // Append the custom title, timestamp, and slider value to each image title in the downloadImage function calls
-    NMO_Main.downloadImage("NormalMap", customTitle + "_NormalMap_" + timestamp + "_" + "displacement_" + sliderValue);
-    NMO_Main.downloadImage("DisplacementMap", customTitle + "_DisplacementMap_" + timestamp + "_" + "displacement_" + sliderValue);
-    NMO_Main.downloadImage("AmbientOcclusionMap", customTitle + "_AmbientOcclusionMap_" + timestamp + "_" + "displacement_" + sliderValue);
-    NMO_Main.downloadImage("SpecularMap", customTitle + "_SpecularMap_" + timestamp + "_" + "displacement_" + sliderValue);
+    const t1 = customTitle + "_NormalMap_" + timestamp + "_" + "displacement_" + sliderValue;
+    const t2 = customTitle + "_DisplacementMap_" + timestamp + "_" + "displacement_" + sliderValue;
+    const t3 = customTitle + "_AmbientOcclusionMap_" + timestamp + "_" + "displacement_" + sliderValue;
+    const t4 = customTitle + "_SpecularMap_" + timestamp + "_" + "displacement_" + sliderValue;
+    
+    // NMO_Main.downloadImage("NormalMap", t1);
+    // NMO_Main.downloadImage("DisplacementMap", t2);
+    // NMO_Main.downloadImage("AmbientOcclusionMap", t3);
+    // NMO_Main.downloadImage("SpecularMap", t4);
+    const objBlob = NMO_RenderView.returnOBJBlob();
+    
+    NMO_Main.zipDownloadImagesAndObj(["NormalMap", "DisplacementMap", "AmbientOcclusionMap", "SpecularMap"], [t1, t2, t3, t4], objBlob);
+
+   
+
+    // NMO_RenderView.exportModelObj(
+    //   customTitle + "_Model_" + timestamp + "_" + "displacement_" + sliderValue,
+    //   t1, t2, t3, t4, sliderValue
+    // );
+
+
   });
 	
 	this.download_btn.addEventListener('click', function (e) {		
@@ -433,6 +450,143 @@ var NMO_Main = new function(){
 			}, image_type, qual);
 		}
 	}
+
+  this.zipDownloadImagesAndObj = async function(
+    types, oxTitles, objBlob
+  ) {
+    console.log(new JSZip);
+    console.log(new window.JSZip); 
+    
+    var qual = 0.9;
+    var canvas = document.createElement("canvas");
+    // var JSZip = new JSZip(); // Assuming JSZip is already included in your project
+    var zipx = new window.JSZip(); 
+
+    // a string for the mtl file
+    var mtlString = [
+      "newmtl dispMaterial",
+      "Ka 1.000 1.000 1.000  # Ambient color",
+      "Kd 0.200 0.200 0.200  # Diffuse color",
+      "Ks 0.000 0.000 0.000  # Specular color",
+      "Ns 0.100              # Shininess",
+      "d 1.0                 # Opacity (d is for dissolve)",
+      "illum 2               # Illumination model (2 is for specular highlights)"
+    ].join('\n');
+
+    for (let i = 0; i < types.length; i++) {
+      let type = types[i];
+      let oxTitle = oxTitles[i];
+      let file_name = "download";
+      var file_type = NMO_Main.getImageType();
+      let image_type = "image/jpeg";
+      if (file_type == "jpg") image_type = "image/jpeg";
+
+      // Set canvas dimensions and draw the image based on the type
+      if (type == "NormalMap"){
+        canvas.width = NMO_NormalMap.normal_canvas.width;
+        canvas.height = NMO_NormalMap.normal_canvas.height;
+        var context = canvas.getContext('2d');
+        if (file_type == "png") 
+          context.globalAlpha = $('#transparency_nmb').val() / 100;
+        context.drawImage(NMO_NormalMap.normal_canvas,0,0);
+        file_name=oxTitle ? oxTitle : "NormalMap";
+        // Add the normal map to the mtl file
+        mtlString += `\nmap_normal ${file_name}.jpg\n`;
+        console.log("is a normal map");
+      }
+      else if (type == "DisplacementMap"){
+        canvas.width = NMO_DisplacementMap.displacement_canvas.width;
+        canvas.height = NMO_DisplacementMap.displacement_canvas.height;
+        var context = canvas.getContext('2d');
+        if (file_type == "png") 
+          context.globalAlpha = $('#transparency_nmb').val() / 100;
+        context.drawImage(NMO_DisplacementMap.displacement_canvas,0,0);
+        file_name=oxTitle ? oxTitle : "DisplacementMap";
+        // Add the displacement map to the mtl file
+        mtlString += `map_bump ${file_name}.jpg\n`;
+        console.log("is a displacement map");
+      }
+      else if (type == "AmbientOcclusionMap"){
+        canvas.width = NMO_AmbientOccMap.ao_canvas.width;
+        canvas.height = NMO_AmbientOccMap.ao_canvas.height;
+        var context = canvas.getContext('2d');
+        if (file_type == "png") 
+          context.globalAlpha = $('#transparency_nmb').val() / 100;
+        context.drawImage(NMO_AmbientOccMap.ao_canvas,0,0);
+        file_name=oxTitle ? oxTitle : "AmbientOcclusionMap";
+        // Add the ambient occlusion map to the mtl file
+        mtlString += `map_Ka ${file_name}.jpg\n`;
+      }
+      else if (type == "SpecularMap"){
+        canvas.width = NMO_SpecularMap.specular_canvas.width;
+        canvas.height = NMO_SpecularMap.specular_canvas.height;
+        var context = canvas.getContext('2d');
+        if (file_type == "png") 
+          context.globalAlpha = $('#transparency_nmb').val() / 100;
+        context.drawImage(NMO_SpecularMap.specular_canvas,0,0);
+        file_name=oxTitle ? oxTitle : "SpecularMap";
+        // Add the specular map to the mtl file
+        mtlString += `map_Ks ${file_name}.jpg\n`;
+      }
+
+      var context = canvas.getContext('2d');
+      if (file_type == "png") context.globalAlpha = $('#transparency_nmb').val() / 100;
+      file_name = oxTitle || type;
+
+      if (document.getElementById('file_name').value != "") file_name = document.getElementById('file_name').value;
+
+      var qual = $('#file_jpg_qual_nmb').val() / 100;
+
+      // Convert canvas to Blob and add to zip
+      await new Promise(resolve => {
+        if (file_type == "tiff") {
+          CanvasToTIFF.toBlob(canvas, function(blob) {
+            zipx.file(file_name + ".tif", blob);
+            resolve();
+          });
+        } else {
+          canvas.toBlob(function(blob) {
+            zipx.file(file_name + "." + file_type, blob);
+            resolve();
+          }, image_type, qual);
+        }
+      });
+    }
+
+
+    const newMtlFileName = oxTitles[0].replace('_NormalMap_', '_Model_') + '.mtl';
+    // set the mtl file contents and add it to the zip
+    zipx.file(newMtlFileName, mtlString);
+
+    // add the mtllib line to the objBlob
+    const newMtlLine = 'mtllib ' + newMtlFileName;
+    const newMtlLine1 = 'usemtl dispMaterial';
+    const objString = await objBlob.text();
+    const lines = objString.split('\n');
+
+    if (lines[0].startsWith('o')) {
+        lines[0] = 'o dispPlane' + lines[0].substring(1);
+    } else {
+        lines.unshift('o dispPlane');
+    }
+
+    const newObjString = lines.join('\n');
+
+    const objStringWithMtlInjected = newMtlLine + '\n' + newMtlLine1 + '\n' + newObjString;
+    const objBlobWithMtl = new Blob([objStringWithMtlInjected], {type: 'text/plain'});
+
+
+
+    // Add the OBJ file to the zip
+    // title can be t1 but replace '_NormalMap_' with '_Model_
+    const objFileName = oxTitles[0].replace('_NormalMap_', '_Model_');
+    zipx.file(objFileName + ".obj", objBlobWithMtl);
+
+    // Generate the zip file and trigger download
+    zipx.generateAsync({type:"blob"}).then(function(content) {
+      saveAs(content, "images.zip");
+    });
+  };
 }
 
 //

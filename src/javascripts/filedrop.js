@@ -66,6 +66,7 @@ NMO_FileDrop = new function(){
 
   let videoStream = null;
   let autoTimerMode = false;
+  this.fileMode = false;
   let timerId; // Variable to store the timer ID
 
   let autoPhotoToggle = document.getElementById("autoPhotoToggle");
@@ -74,7 +75,7 @@ NMO_FileDrop = new function(){
   autoPhotoToggle.addEventListener("click", function() {
     autoTimerMode = !autoTimerMode;
     if (autoTimerMode) {
-        // console.log("Auto timer mode is active");
+        console.log("Auto timer mode is active");
         autoPhotoToggle.classList.add("active");
         // Start the timer to run capturePhoto every 5 seconds
         timerId = setInterval(function() { // Store the interval ID in timerId
@@ -82,19 +83,33 @@ NMO_FileDrop = new function(){
             console.log('Interval running');
         }, 5000);
     } else {
-        // console.log("Auto timer mode is inactive");
+        console.log("Auto timer mode is inactive");
         autoPhotoToggle.classList.remove("active");
         // Stop the timer using the stored interval ID
         clearInterval(timerId);
     }
   });
+
+  let fileModeToggle = document.getElementById("fileMode");
+
+  fileModeToggle.addEventListener("click", function() {
+    fileMode = !fileMode;
+    if (fileMode) {
+        console.log("File mode is active");
+        fileModeToggle.classList.add("active");
+    } else {
+        console.log("File mode is inactive");
+        fileModeToggle.classList.remove("active");
+    }
+  });
+
     
   async function initializeWebcam() {
       try {
         videoStream = await navigator.mediaDevices.getUserMedia({
           video: {
-            width: { ideal: 1280 }, // Request a high resolution to aim for the native resolution
-            height: { ideal: 720 }
+            width: { ideal: 910 }, // Request a high resolution to aim for the native resolution
+            height: { ideal: 512 }
           }
         });
         const video = document.createElement('video');
@@ -135,19 +150,17 @@ NMO_FileDrop = new function(){
   }
 
   function capturePhoto(clicked) {
-    // console.log('Clicked:', clicked);
+    console.log('Clicked:', clicked);
     if (videoStream && videoStream.getVideoTracks().length > 0) {
       const videoTrack = videoStream.getVideoTracks()[0];
       const settings = videoTrack.getSettings();
       // Determine the size for the square (use the smaller dimension of the video to ensure a square)
-      const squareSize = Math.min(512, 512);
+      const squareSize = Math.min(settings.width, settings.height);
 
       // Create an off-screen canvas
       const offScreenCanvas = document.createElement('canvas');
-      // offScreenCanvas.width = squareSize; // Adjust canvas size to match the square size
-      // offScreenCanvas.height = squareSize;
-      offScreenCanvas.width = 512; // Adjust canvas size to match the square size
-      offScreenCanvas.height = 512;
+      offScreenCanvas.width = squareSize; // Adjust canvas size to match the square size
+      offScreenCanvas.height = squareSize;
 
       // Draw the video frame to the off-screen canvas
       const ctx = offScreenCanvas.getContext('2d');
@@ -157,10 +170,8 @@ NMO_FileDrop = new function(){
 
       offScreenVideo.onloadedmetadata = () => {
           // Calculate the top left corner of the square area to capture from the video
-          // const x = (settings.width - squareSize) / 2;
-          // const y = (settings.height - squareSize) / 2;
-          const x = (512 - squareSize) / 2;
-          const y = (512 - squareSize) / 2;
+          const x = (settings.width - squareSize) / 2;
+          const y = (settings.height - squareSize) / 2;
 
           ctx.drawImage(offScreenVideo, x, y, squareSize, squareSize, 0, 0, squareSize, squareSize);
 
@@ -189,8 +200,14 @@ NMO_FileDrop = new function(){
   }
 
   // Modify the existing code to add an event listener to the canvas for capturing photos on click
-  document.getElementById('height_canvas').addEventListener('click', function() {
-    capturePhoto(true);
+  document.getElementById('height_canvas').addEventListener('click', function(event) {
+    console.log('fileMode:', fileMode);
+    if (fileMode) {
+      // NMO_FileDrop.handleFileSelect(event);
+      select_file_height.click()
+    } else {
+      capturePhoto(event, true);
+    }
   });
 
 
@@ -319,8 +336,8 @@ NMO_FileDrop = new function(){
 	this.initHeightMap = function(){
 
 		//height_canvas.height = document.getElementById("height_canvas").height;
-		this.height_canvas.height = 720;
-		this.height_canvas.width = 720;
+		this.height_canvas.height = 512;
+		this.height_canvas.width = 512;
 		
 	    this.height_image = new Image();
 		this.height_image.onload = function () {

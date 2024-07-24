@@ -178,7 +178,7 @@ var NMO_RenderView = new function(){
 		//this.material.uniforms.ambientLightColor.value = new THREE.Color(0x777777);
 
 
-		this.setModel("Plane");
+		this.setModel("ExportablePlane");
 
 		//this.scene.background = textureCube;
 		
@@ -224,6 +224,28 @@ var NMO_RenderView = new function(){
 			this.scene.add( this.render_model );
 		}
 		else if (type == "Plane"){
+			var geometry = new THREE.PlaneGeometry(12, 12, 128, 128);
+			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
+			//geometry.computeTangents();
+			this.rotation_enabled = 0;
+			// this.render_model.rotation.x = 0;
+			// this.render_model.rotation.y = 0;
+			this.camera.position.x = 0;
+			this.camera.position.y = -45;
+			this.camera.position.z = 29;
+			this.camera.lookAt({
+	        	x: 0,
+	        	y: 0,
+		        z: 0
+	    	});
+			document.getElementById('input_rot').checked = false;
+			this.render_model = new THREE.Mesh( new THREE.BufferGeometry().fromGeometry( geometry), this.material);
+			this.render_model.castShadow = true;
+			this.render_model.receiveShadow = true;
+			this.render_model.material.side = THREE.DoubleSide;
+			this.scene.add( this.render_model );
+		}
+		else if (type == "ExportablePlane"){
 			var geometry = new THREE.PlaneGeometry(12, 12, 128, 128);
 			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
 			//geometry.computeTangents();
@@ -349,7 +371,56 @@ var NMO_RenderView = new function(){
 		}
 		this.render_model.material.needsUpdate = true;
 	};
+  this.exportModelObj = function(fileName, t1, t2, t3, t4, displacementScale) {
+    // Ensure fileName ends with .obj extension
+    if (!fileName.endsWith('.obj')) {
+      fileName += '.obj';
+    }
 
+    var exporter = new THREE.OBJExporter();
+    var result = exporter.parse(this.render_model);
+
+    var mtlFileName = fileName.slice(0, -4) + '.mtl'; // Remove .obj and add .mtl
+    var objContent = 'mtllib ' + mtlFileName + '\n' + result; // Prepend mtllib directive
+  
+    // Create a blob from the modified OBJ export result
+    var blob = new Blob([objContent], { type: 'model/obj' });
+  
+    // Create an anchor element and trigger a download
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link); // Append link to body
+    link.click(); // Simulate click on the link to trigger the download
+    document.body.removeChild(link); // Remove link from body
+
+    // Construct the content for the .mat file
+    var content = `newmtl material1
+      map_Bump ${t2 + ".jpg"}  # Bump map (for displacement)
+      disp_Scale ${displacementScale}  # Displacement scale (custom property)
+      map_Ka ${t3 + ".jpg"}  # Ambient occlusion map
+      map_Ks ${t4 + ".jpg"}  # Specular map
+      `;
+
+    // Create a blob from the content
+    var blob = new Blob([content], { type: 'text/plain' });
+
+    // Create an anchor element and trigger a download
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = mtlFileName;
+    document.body.appendChild(link); // Append link to body
+    link.click(); // Simulate click on the link to trigger the download
+    document.body.removeChild(link); // Remove link from body
+  };
+  this.returnOBJBlob = function() {
+    var exporter = new THREE.OBJExporter();
+    var result = exporter.parse(this.render_model);
+ 
+    // Create a blob from the modified OBJ export result
+    var blob = new Blob([result], { type: 'model/obj' });
+    return blob;
+  }
 }
 
 $(document).ready(function() {
