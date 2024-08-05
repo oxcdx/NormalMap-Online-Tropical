@@ -302,9 +302,6 @@ NMO_FileDrop = new function(){
         reader.readAsDataURL(imgFile);
   };
 
-
-
-
 	this.loadHeightmap = function(source){
 		this.height_image = new Image();
 				
