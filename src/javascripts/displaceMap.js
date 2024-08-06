@@ -189,36 +189,42 @@ NMO_DisplacementMap = new function(){
 
 		// Shader + uniforms
 		var shader = NMO_DisplacementShader;
-		this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-		this.height_map_tex = new THREE.Texture( heightmap );
-		this.height_map_tex.wrapS 		= this.height_map_tex.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
-		this.height_map_tex.minFilter 	= this.height_map_tex.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
-		this.height_map_tex.anisotropy  = 2;
-		this.height_map_tex.needsUpdate = true;
+    this.uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-		this.uniforms["invert"].value = this.invert_displacement;
-		this.uniforms["contrast"].value = this.contrast;
+    // Load the height map texture
+    this.height_map_tex = new THREE.Texture(heightmap);
+    this.height_map_tex.wrapS = this.height_map_tex.wrapT = THREE.ClampToEdgeWrapping; // RepeatWrapping, ClampToEdgeWrapping
+    this.height_map_tex.minFilter = this.height_map_tex.magFilter = THREE.NearestFilter; // LinearFilter, NearestFilter
+    this.height_map_tex.anisotropy = 2;
+    this.height_map_tex.needsUpdate = true;
+
+    // Set the shader uniforms
+    this.uniforms["invert"].value = this.invert_displacement;
+    this.uniforms["contrast"].value = this.contrast;
     this.uniforms["brightness"].value = this.brightness;
-		this.uniforms["mosaic"].value = this.mosaic;
-		this.uniforms["tHeight"].value = this.height_map_tex;
-		if(NMO_Main.normal_map_mode == "pictures")
-			this.uniforms["flipY"].value = 1;
-		else
-			this.uniforms["flipY"].value = 0;
-		
-		var parameters = { 
-			fragmentShader: shader.fragmentShader, 
-			vertexShader: shader.vertexShader, 
-			uniforms: this.uniforms
-		};
+    this.uniforms["mosaic"].value = this.mosaic;
+    this.uniforms["tHeight"].value = this.height_map_tex;
 
-		var material = new THREE.ShaderMaterial( parameters );
-		//material.wrapAround = true;
-		material.transparent = true;
+    if (NMO_Main.normal_map_mode == "pictures") {
+      this.uniforms["flipY"].value = 1;
+    } else {
+      this.uniforms["flipY"].value = 0;
+    }
 
-		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material );
-		render_mesh.name = "mesh";		
-		scene.add(render_mesh);
+    // Create the shader material
+    var parameters = {
+      fragmentShader: shader.fragmentShader,
+      vertexShader: shader.vertexShader,
+      uniforms: this.uniforms
+    };
+
+    var material = new THREE.ShaderMaterial(parameters);
+    material.transparent = true;
+
+    // Create the mesh with the shader material
+    var render_mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1, 1, 1), material);
+    render_mesh.name = "mesh";
+    scene.add(render_mesh);
 		
 		
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
@@ -240,7 +246,7 @@ NMO_DisplacementMap = new function(){
 		this.composer.addPass( this.gaussian_shader_x );
 		this.composer.render( 1/60 );		
 		
-		//console.log("Displacement: " + (Date.now() - start));
+		console.log("Displacement: " + (Date.now() - start));
 
 		NMO_Main.setTexturePreview( this.displacement_canvas, "displace_img", w, h);	
 		

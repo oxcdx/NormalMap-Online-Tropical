@@ -25,7 +25,8 @@
 var NMO_RenderView = new function(){
 	this.scene = new THREE.Scene();
 	this.camera = new THREE.PerspectiveCamera( 30, 1, 0.1, 100000 );
-	this.renderer = new THREE.WebGLRenderer({ alpha: false,  antialias: true });
+	this.renderer = new THREE.WebGLRenderer({ alpha: true,  antialias: true });
+  this.renderer.setClearColor( 0x000000, 0 );
 	this.displacement_map, this.diffuse_map, this.normal_map, this.specular_map, this.ao_map;
 	this.material;
 	this.rotation_enabled = false;
@@ -141,14 +142,14 @@ var NMO_RenderView = new function(){
 		var defines = {};
 
 		//defines[ "USE_MAP" ] = "";
-		defines[ "USE_SPECULARMAP" ] = "";
+		// defines[ "USE_SPECULARMAP" ] = "";
 		if (document.getElementById('input_displacement').checked)
 			defines[ "USE_DISPLACEMENTMAP" ] = "";
-		defines[ "USE_AOMAP" ] = "";
+		// defines[ "USE_AOMAP" ] = "";
 		
 		
 		//defines[ "USE_LIGHTMAP" ] = "";
-		defines[ "USE_NORMALMAP" ] = "";
+		// defines[ "USE_NORMALMAP" ] = "";
 
 		this.material = new THREE.ShaderMaterial( { 
 			name: "renderViewShader",
@@ -156,7 +157,10 @@ var NMO_RenderView = new function(){
 			uniforms: shaderUniforms,
 			vertexShader: shader.vertexShader, 
 			fragmentShader: shader.fragmentShader,
-			//transparent: true,
+			transparent: true,
+      // blending: THREE.NormalBlending, // Set blending mode
+      // depthTest: true,
+      // depthWrite: false,
 			lights: true
 		} );
 		//console.log(shaderUniforms)
@@ -172,7 +176,7 @@ var NMO_RenderView = new function(){
 		this.material.uniforms.aoMapIntensity.value = 1;
 		this.material.uniforms.displacementScale.value = -1
 		this.material.uniforms.displacementBias.value = 0;
-		this.material.uniforms.diffuse.value = new THREE.Color(0x342bf1);
+		// this.material.uniforms.diffuse.value = new THREE.Color(0x342bf1);
 		this.material.uniforms.specular.value = new THREE.Color(0xc93ff0);
 		//this.material.unshininess.value = 40;
 		//this.material.uniforms.ambientLightColor.value = new THREE.Color(0x777777);

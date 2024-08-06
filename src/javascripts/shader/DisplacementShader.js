@@ -6,19 +6,31 @@ NMO_DisplacementShader = {
     "brightness":	{type: "1f", value: 0},
     "mosaic":		{type: "1f", value: 0},
     "flipY": 		{type: "1f", value: 0},
-    "tHeight": 		{type: "t", value: null }
+    "tHeight": 		{type: "t", value: null },
+    "displacementScale": {type: "1f", value: 1}
 	},
 
 	vertexShader: `
 		precision mediump float;
-        varying vec2 vUv;
-		uniform float flipY;
-        void main() 
-		{
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-			vUv = uv;
-			vUv.y = (flipY > 0.0) ? (1.0 - vUv.y) : vUv.y;
-		}`
+    varying vec2 vUv;
+    uniform float flipY;
+    uniform sampler2D tHeight;
+    uniform float displacementScale;
+
+    void main() 
+    {
+        vUv = uv;
+        vUv.y = (flipY > 0.0) ? (1.0 - vUv.y) : vUv.y;
+
+        // Sample the displacement map
+        vec4 displacement = texture2D(tHeight, vUv);
+
+        // Adjust the vertex position based on the displacement map
+        vec3 newPosition = position;
+
+        // Debugging: Output the displacement value to the color
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+    }`
 	,
 
 	fragmentShader: `
