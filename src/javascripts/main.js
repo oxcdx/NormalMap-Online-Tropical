@@ -585,6 +585,11 @@ var NMO_Main = new function(){
     // Generate the zip file and trigger download
     zipx.generateAsync({type:"blob"}).then(function(content) {
       saveAs(content, "images.zip");
+      // also dowload the displacement map .jpg
+
+      const timestamp = formatTimestamp(new Date());
+      
+      NMO_Main.downloadImage("DisplacementMap", "customTitle" + "_DisplacementMap_" + timestamp + "_" + "displacement");
     });
   };
 }

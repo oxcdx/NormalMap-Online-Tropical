@@ -33,6 +33,8 @@ var NMO_RenderView = new function(){
 	this.render_model;
 	this.customModel;
 	this.textureCube;
+  
+  this.displacementShader = false;
 	
 	this.renderView = function(){
 		// request new frame
@@ -123,6 +125,11 @@ var NMO_RenderView = new function(){
 		
 		//var shader = THREE.NormalDisplacementShader;
 		var shader = THREE.ShaderLib.phong
+
+    // use displacement shader instead
+    var shader2 = NMO_DisplacementShader;
+
+    
 		
 		// see ShaderLib (https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/ShaderLib.js)
 		var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
@@ -149,7 +156,7 @@ var NMO_RenderView = new function(){
 		
 		
 		//defines[ "USE_LIGHTMAP" ] = "";
-		// defines[ "USE_NORMALMAP" ] = "";
+		defines[ "USE_NORMALMAP" ] = "";
 
 		this.material = new THREE.ShaderMaterial( { 
 			name: "renderViewShader",
@@ -375,6 +382,18 @@ var NMO_RenderView = new function(){
 		}
 		this.render_model.material.needsUpdate = true;
 	};
+  this.setDisplacementShader = function() {
+    console.log(this.displacementShader);
+
+    //toggle displacement shader
+    if (this.displacementShader === true) {
+      this.displacementShader = false;
+    } else {
+      this.displacementShader = true;
+    }
+    
+    //console.log(this.displacementShader);
+  };
   this.exportModelObj = function(fileName, t1, t2, t3, t4, displacementScale) {
     // Ensure fileName ends with .obj extension
     if (!fileName.endsWith('.obj')) {

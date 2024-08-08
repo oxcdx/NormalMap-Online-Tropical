@@ -94,7 +94,7 @@ NMO_FileDrop = new function(){
 
   fileModeToggle.addEventListener("click", function() {
     fileMode = !fileMode;
-    if (fileMode) {
+    if (fileMode === true) {
         console.log("File mode is active");
         fileModeToggle.classList.add("active");
     } else {
@@ -202,7 +202,7 @@ NMO_FileDrop = new function(){
   // Modify the existing code to add an event listener to the canvas for capturing photos on click
   document.getElementById('height_canvas').addEventListener('click', function(event) {
     console.log('fileMode:', fileMode);
-    if (fileMode) {
+    if (fileMode === true) {
       // NMO_FileDrop.handleFileSelect(event);
       select_file_height.click()
     } else {
@@ -555,3 +555,4 @@ document.getElementById("height_map").addEventListener("drop", function(e){
 
 
 document.getElementById('select_model_file').addEventListener('change', NMO_FileDrop.handleModelFileSelect, false);
+

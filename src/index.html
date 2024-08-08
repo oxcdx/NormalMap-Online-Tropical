@@ -225,7 +225,7 @@
                   onchange="NMO_DisplacementMap.setDisplacementSetting('mosaic', this.value); document.getElementById('dm_mosaic_slider').value = this.value;">
             </div>
           </div>
-          <div class="row d-none">
+          <div class="row">
             <div class="col">
               <span>Invert</span>
             </div>
@@ -448,6 +448,7 @@
             <div class="row" >
               <div class="col" >
                 <input id="input_enviroment" type="checkbox" value="normal" onclick="NMO_RenderView.setEnvironment(document.getElementById('input_enviroment').checked)" >Environment
+                <input id="displacement_shader" type="checkbox" value="displacement-shader" onclick="NMO_RenderView.setDisplacementShader(document.getElementById('displacement_shader').checked)" >Displacement
               </div>
             </div>
           </div>
