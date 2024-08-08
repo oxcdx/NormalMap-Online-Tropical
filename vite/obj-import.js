@@ -215,16 +215,16 @@ async function init() {
         z: 0
       };
       const objectFolder = gui.addFolder('Object Position');
-      objectFolder.add(objectSettings, 'x', -10, 20).onChange(value => {
+      objectFolder.add(objectSettings, 'x', -50, 50).onChange(value => {
         // edit the position of the current selected object
         objectArr[selectedObject].position.x = value;
       }
       );
-      objectFolder.add(objectSettings, 'y', 0, 50).onChange(value => {
+      objectFolder.add(objectSettings, 'y', -5, 50).onChange(value => {
         objectArr[selectedObject].position.y = value;
       }
       );
-      objectFolder.add(objectSettings, 'z', -10, 20).onChange(value => {
+      objectFolder.add(objectSettings, 'z', -50, 50).onChange(value => {
         objectArr[selectedObject].position.z = value;
       }
       );
@@ -249,7 +249,7 @@ async function init() {
         scale: 1
       };
       const objectDisplacementFolder = gui.addFolder('Object Displacement');
-      objectDisplacementFolder.add(objectDisplacementSettings, 'scale', 0, 5).onChange(value => {
+      objectDisplacementFolder.add(objectDisplacementSettings, 'scale', 0, 10).onChange(value => {
         objectArr[selectedObject].traverse(function (child) {
           if (child.isMesh) {
             child.material.displacementScale = value;
@@ -357,7 +357,7 @@ async function init() {
       const objectDuplicateSettings = {
         duplicate: () => {
           const newObject = objectArr[selectedObject].clone();
-          newObject.position.y += 5;
+          newObject.position.y += 2;
       
           // prompt to upload a new texture
           const textureUpload = document.createElement('input');
